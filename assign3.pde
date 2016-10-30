@@ -141,7 +141,7 @@ void draw() {
         if(enemyX-61*5 >= 640){
           state2=enemy3;
           enemyX =0;
-          enemyY = floor(random(70,355));
+          enemyY = floor(random(70,295));
         }
       
       break;
