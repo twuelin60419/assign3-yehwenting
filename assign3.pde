@@ -1,225 +1,219 @@
-//You should implement your assign3 here.
-final int gameStart = 1;
-final int gameRun = 2;
-final int enemy1 =3;
-final int enemy2 =4;
-final int enemy3 =5;
+/* please implement your assign1 code in this file. */
 
-
-PImage backgroundImg1;
-PImage backgroundImg2;
-PImage fighter;
-PImage treasure;
-PImage hp;
-PImage enemy;
-PImage start1;
-PImage start2;
-
-int state = gameStart;
-int state2 = enemy1;
-
-
-int x,y;
-//fighter
-int fighterX,fighterY;
-float speed ;
-boolean upPressed = false;
-boolean downPressed = false;
-boolean leftPressed = false;
-boolean rightPressed = false;
-//treasure
-int treasureX,treasureY;
-//HP
-int hpX;
-//enemy
-int enemyX,enemyY;
-
-void setup () {
-  size(640, 480) ;
-  backgroundImg1 = loadImage("img/bg1.png");
-  backgroundImg2 = loadImage("img/bg2.png");
-  fighter = loadImage("img/fighter.png");
-  treasure = loadImage("img/treasure.png");
-  hp = loadImage("img/hp.png");
-  enemy = loadImage("img/enemy.png");
-  start1 = loadImage("img/start1.png");
-  start2= loadImage("img/start2.png");
+  PImage fighter;
+  PImage bg1;
+  PImage bg2;
+  PImage hp;
+  PImage enemy, enemy1;
+  PImage treasure;
+  PImage startBg1, startBg2, endBg1,endBg2;
+  int treasureX, treasureY;
+  int bloodX;
+  int x;
+  int y;
+  int a;
+  int b;
+  int c;
+  int bg1X,bg2X;
+  int speedBg,speedFighter;
+  float enemyX,enemyY, enemy1X, enemy1Y;
+  int fighterX,fighterY;
+  boolean upPressed;
+  boolean downPressed;
+  boolean rightPressed;
+  boolean leftPressed;
+  boolean reset;
+  final int STATE_1=1, STATE_2=2,STATE_3=3;
+  int gameState;
   
-  //background
-  x = -640;
-  y = 0;
-  //fighter
-  speed = 5;
-  fighterX = 570;
-  fighterY = 240;
-  //treasure
-  treasureX = floor(random(600));
-  treasureY = floor(random(400));
-  //enemy
-  enemyX = 0;
-  enemyY = floor(random(400));
+  
+  
+void setup () {
+  //load image
+  fighter=loadImage("img/fighter.png");
+  bg1=loadImage("img/bg1.png");
+  bg2=loadImage("img/bg2.png");
+  hp=loadImage("img/hp.png");
+  enemy=loadImage("img/enemy.png");
+  enemy1=loadImage("img/enemy1.png");
+  treasure=loadImage("img/treasure.png");
+  
+  //initiate variables
+  treasureX=floor(random(80,400));
+  treasureY=floor(random(100,400));
+  bloodX=40;
+  x=0;
+  y=0;
+  size(640,480); 
+  
+  bg1X=0;
+  bg2X=-640;
+  speedBg=4;
+  speedFighter=8;
+  
+  enemyX=0;
+  enemyY=floor(random(140,200));
+  fighterX=580;
+  fighterY=240;
+  upPressed=false;
+  downPressed=false;
+  rightPressed=false;
+  leftPressed=false;
+  reset=false;
+  
+  gameState=STATE_1;
 
 }
+
+
+
 
 void draw() {
-  switch(state){
-    case gameStart :
-    
-    image(start2,0,0,640,480);
-    if(mouseX> 210 && mouseX< 440 && mouseY > 370 && mouseY< 410){
-      image(start1,0,0,640,480);
-    }
-    
-    break;
-    
-    case gameRun:
-   
-    // background
-    image(backgroundImg1,x,0,640,480);
-    image(backgroundImg2,y,0,640,480);
-    x++;
-    y++;
-    if(y==640){
-      y=-640;
-    }
-    if(x==640){
-      x=-640;
-    }
-    //fighter
-    
-    if (upPressed) {
-      fighterY -= speed;
-    }
-    if (downPressed) {
-      fighterY += speed;
-    }
-    if (leftPressed) {
-      fighterX -= speed;
-    }
-    if (rightPressed) {
-      fighterX += speed;
-    }
-    image(fighter,fighterX,fighterY);
-    //boundary detection
-    if(fighterX < 0){
-      fighterX = 0;
-    }
-    if(fighterX > width-51){
-      fighterX = width-51;
-    }
-    if(fighterY < 0){
-      fighterY = 0;
-    }
-    if(fighterY > 480-51){
-      fighterY = 429;
-    }
-    //treasure
-    image(treasure,treasureX,treasureY);
-    //hp
-    fill(255,0,0);
-    rect(15,13,200,20);
-    image(hp,10,10);
-    
-    //enemy
-    switch(state2){
-      case enemy1:
-        for(int i=0;i<5;i++){
-        image(enemy,enemyX-61*i,enemyY);
-        }
-        enemyX += 5;
-        if(enemyX-61*5 >= 640){
-          state2 = enemy2;
-          enemyX =0;
-          enemyY = floor(random(100));
-        }
-        break;
-      case enemy2:
-        for(int i=0;i<5;i++){
-          image(enemy,enemyX-61*i,enemyY+61*i);
-      }
-        enemyX +=5;
-        if(enemyX-61*5 >= 640){
-          state2=enemy3;
-          enemyX =0;
-          enemyY = floor(random(70,295));
-        }
       
-      break;
+      //bg scrolling
+      image(bg1,bg1X,0);
+      image(bg2,bg2X,0);
+      bg1X+=speedBg;
+      bg2X+=speedBg;
+      if (bg1X>640){
+      bg1X*=-1;}
+      if (bg2X>640){
+      bg2X*=-1;}
       
-      case enemy3:
-        for(int i=0;i<5;i++){
-          
-            if(i<3){
-            image(enemy,enemyX-61*i,enemyY+61*i);
-            
-            }else if(i==3){
-              image(enemy,enemyX-61*i,enemyY+61*(i-2));
-            }else{
-              image(enemy,enemyX-61*i,enemyY);
-            }
-        } 
-        for(int j=0; j<5;j++){
-          if(j<3){
-            image(enemy,enemyX-61*j,enemyY-61*j);
-          }else if(j==3){
-            image(enemy,enemyX-61*j,enemyY-61*(j-2));
-          }else{
-            image(enemy,enemyX-61*j,enemyY);
+      
+      image(fighter,fighterX,fighterY);
+      image(treasure,treasureX,treasureY);
+      rect(37,23,bloodX,25);  //blood
+      fill(255,0,0);
+      stroke(0,0,0,0);
+      image(hp,30,20); 
+      
+      //enemy                 
+      if (enemyX>640){ 
+      enemyX=enemyX-1000;}
+      if (enemyY>640){ 
+      enemyY=enemyY-640;}
+      
+      enemyX+=speedFighter-5;  
+      
+      switch (gameState){
+ 
+        case STATE_1:
+          //straight line
+          for (int i=0; i<400; i+=80){
+          image(enemy,enemyX+i,enemyY);
           }
-        }
-        enemyX +=5;
-        if(enemyX-61*5 >= 640){
-          state2=enemy1;
-          enemyX =0;
-          enemyY = floor(random(400));
-        }
+          enemyX+=speedFighter-5;
+          
+          if (enemyX>640){
+          enemyY=floor(random(80,200));
+          gameState=STATE_2;}
+          break;
         
-        break;
-    }
-    }
+        case STATE_2:
+          //leaning line
+          for (int p=0; p<350; p+=70){
+            for (int h=0; h<250; h+=50){
+              if (p==h*1.4){
+                image(enemy,enemyX+p,enemyY+h);}
+              }
+          }
+          enemyX+=speedFighter-5; 
+          
+          
+          if (enemyX>640){
+          enemyY=floor(random(140,360));
+          gameState=STATE_3;}
+          break;
+        
+        case STATE_3:
+          //dimond
+          for (int a=0; a<210; a+=70){
+              image(enemy,enemyX,enemyY);
+              image(enemy,enemyX+70,enemyY+70);
+              image(enemy,enemyX+140,enemyY+140);
+              image(enemy,enemyX+70,enemyY-70);
+              image(enemy,enemyX+140,enemyY-140);
+              image(enemy,enemyX+210,enemyY+70);
+              image(enemy,enemyX+210,enemyY-70);
+              image(enemy,enemyX+280,enemyY);
+          }
+          enemyX+=speedFighter-5; 
+          if (enemyX>640){
+          enemyY=floor(random(50,300));
+          gameState=STATE_1;}
+          break;
+          
+
+      }
+      
+      
+      
+      
+    
+      //key control of the plane
+      if (upPressed){
+      fighterY-=speedFighter;
+      }
+      if (downPressed){
+      fighterY+=speedFighter;
+      }
+      if (rightPressed){
+      fighterX+=speedFighter;
+      }
+      if (leftPressed){
+      fighterX-=speedFighter;
+      }
+      
+      //border
+      if (fighterX>width-50){fighterX=width-50;}
+      if (fighterX<0){fighterX=0;}
+      if (fighterY>height-50){fighterY=height-50;}
+      if (fighterY<0){fighterY=0;}
+      if (bloodX>200){bloodX=200;}
+
 }
 
-void mousePressed(){
-  if(mouseX> 210 && mouseX< 440 && mouseY > 370 && mouseY< 410){
-  state = gameRun; 
-  }
-  
-}
 
-void keyPressed() {
-  if (key == CODED) { // detect special keys 
-    switch (keyCode) {
+
+
+//use switch function wit hboolean to control keyPressed
+void keyPressed(){
+  if(key==CODED){     //detect special key input
+    switch(keyCode){  //keyCode is the special coded key
       case UP:
-        upPressed = true;
-        break;
+         upPressed=true;
+         break;
       case DOWN:
-        downPressed = true;
-        break;
-      case LEFT:
-        leftPressed = true;
-        break;
+         downPressed=true;
+         break;
       case RIGHT:
-        rightPressed = true;
-        break;
-    }
-  }
-}
+         rightPressed=true;
+         break;
+      case LEFT:
+         leftPressed=true;
+         break;
+    }//switch colunmn
+  }  //if column
 
-void keyReleased() {
-  if (key == CODED) {
-    switch (keyCode) {
+}//keyPressed coulumn
+
+
+void keyReleased(){
+  if(key==CODED){     //detect special key input
+    switch(keyCode){  //keyCode is the special coded key
       case UP:
-        upPressed = false;
-        break;
+         upPressed=false;
+         break;
       case DOWN:
-        downPressed = false;
-        break;
-      case LEFT:
-        leftPressed = false;
-        break;
+         downPressed=false;
+         break;
       case RIGHT:
-        rightPressed = false;
-        break;
-    }
-  }
-}
+         rightPressed=false;
+         break;
+      case LEFT:
+         leftPressed=false;
+         break;
+    }//switch colunmn
+  }  //if column
+}//keyReleased coulumn
